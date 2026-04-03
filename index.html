@@ -37,17 +37,17 @@
           <div class="lookup-wrapper">
             <div class="section-title">
               <h1>Tra cứu điểm thi vào 10</h1>
-              <p>Nhập số báo danh để xem kết quả.</p>
+              <p>Nhập mã trong cột Phone (số báo danh) để xem kết quả.</p>
             </div>
 
             <form id="lookup-form" class="lookup-form simple-form" novalidate>
-              <label for="candidate-id">Số báo danh</label>
+              <label for="candidate-id">Số báo danh (Phone)</label>
               <input
                 id="candidate-id"
                 name="candidateId"
                 type="text"
-                placeholder="Nhập số báo danh"
-                maxlength="12"
+                placeholder="Ví dụ: 2829-02001"
+                maxlength="64"
                 autocomplete="off"
                 required
               />
@@ -56,39 +56,43 @@
             </form>
 
             <section id="result-card" class="result-card hidden" aria-label="Kết quả tra cứu">
-              <div class="result-header">
-                <h3>Kết quả điểm thi</h3>
-                <span id="result-status" class="status-pill">Đạt</span>
-              </div>
-
-              <div class="candidate-meta">
-                <p><strong>Họ tên:</strong> <span id="result-name"></span></p>
-                <p><strong>Số báo danh:</strong> <span id="result-id"></span></p>
-                <p><strong>Hội đồng thi:</strong> <span id="result-location"></span></p>
-              </div>
-
-              <div class="score-grid">
-                <article>
-                  <span>Toán</span>
-                  <strong id="score-math"></strong>
-                </article>
-                <article>
-                  <span>Ngữ văn</span>
-                  <strong id="score-literature"></strong>
-                </article>
-                <article>
-                  <span>Tiếng Anh</span>
-                  <strong id="score-english"></strong>
-                </article>
-                <article>
-                  <span>Điểm ưu tiên</span>
-                  <strong id="score-priority"></strong>
-                </article>
-              </div>
-
-              <div class="result-footer">
-                <p><strong>Tổng điểm xét tuyển:</strong> <span id="score-total"></span></p>
-                <p><strong>Nguyện vọng 1:</strong> <span id="result-preference"></span></p>
+              <h3 class="result-title">Kết quả tra cứu</h3>
+              <dl class="result-summary" id="result-summary">
+                <div class="result-summary-row">
+                  <dt>Họ tên</dt>
+                  <dd id="summary-name"></dd>
+                </div>
+                <div class="result-summary-row">
+                  <dt>Số báo danh</dt>
+                  <dd id="summary-phone"></dd>
+                </div>
+                <div class="result-summary-row">
+                  <dt>Điểm thi</dt>
+                  <dd id="summary-exam-score"></dd>
+                </div>
+                <div class="result-summary-row">
+                  <dt>Phòng thi</dt>
+                  <dd id="summary-room"></dd>
+                </div>
+              </dl>
+              <p class="result-table-caption">Điểm từng môn và liên kết xem bài thi</p>
+              <div class="table-wrap">
+                <table class="result-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Môn</th>
+                      <th scope="col">Điểm</th>
+                      <th scope="col">Kết quả chi tiết</th>
+                    </tr>
+                  </thead>
+                  <tbody id="result-table-body"></tbody>
+                  <tfoot>
+                    <tr class="result-total-row">
+                      <td><strong>Điểm xét tuyển (Toán×2 + Văn×2 + Anh)</strong></td>
+                      <td colspan="2" id="result-composite-score"></td>
+                    </tr>
+                  </tfoot>
+                </table>
               </div>
             </section>
             <div id="huong-dan" class="visually-muted-anchor" aria-hidden="true"></div>
