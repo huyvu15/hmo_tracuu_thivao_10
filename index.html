@@ -74,6 +74,10 @@
                   <dt>Phòng thi</dt>
                   <dd id="summary-room"></dd>
                 </div>
+                <div class="result-summary-row">
+                  <dt>Xếp hạng (tổng điểm xét tuyển)</dt>
+                  <dd id="summary-rank"></dd>
+                </div>
               </dl>
               <p class="result-table-caption">Điểm từng môn và liên kết xem bài thi</p>
               <div class="table-wrap">
@@ -94,6 +98,21 @@
                   </tfoot>
                 </table>
               </div>
+              <div class="score-chart-wrap" id="score-chart-wrap" hidden>
+                <p class="score-chart-title">Phân bố tổng điểm xét tuyển (toàn bộ dữ liệu)</p>
+                <p class="score-chart-hint" id="score-chart-hint"></p>
+                <div
+                  class="histogram"
+                  id="histogram-root"
+                  role="img"
+                  aria-label="Biểu đồ cột số lượng thí sinh theo khoảng điểm"
+                >
+                  <div class="histogram-y-axis" id="score-chart-y-axis" aria-hidden="true"></div>
+                  <div class="histogram-plot">
+                    <div class="histogram-bars" id="score-chart"></div>
+                  </div>
+                </div>
+              </div>
             </section>
             <div id="huong-dan" class="visually-muted-anchor" aria-hidden="true"></div>
             <div id="faq" class="visually-muted-anchor" aria-hidden="true"></div>
@@ -104,20 +123,28 @@
 
     <footer class="site-footer">
       <div class="container footer-grid">
-        <div>
+        <div class="footer-brand-block">
           <p class="footer-brand">HOCMAI</p>
+          <p>Tra cứu điểm thi vào 10 — dữ liệu cập nhật theo từng đợt công bố.</p>
+        </div>
+        <div class="footer-contact">
+          <p class="footer-contact-lead"><strong>Mọi chi tiết liên hệ hỗ trợ:</strong></p>
           <p>
-            Hệ thống giáo dục trực tuyến hỗ trợ học sinh chinh phục kỳ thi quan trọng
-            bằng lộ trình học tập bài bản.
+            Hotline:
+            <a href="tel:+84983226438">0983.226.438</a>
           </p>
-        </div>
-        <div>
-          <p><strong>Hotline:</strong> 1900 6933</p>
-          <p><strong>Email:</strong> support@hocmai.vn</p>
-          <p><strong>Website:</strong> hocmai.vn</p>
-        </div>
-        <div>
-          <p><strong>Lưu ý:</strong> Trang hiển thị kết quả tra cứu theo từng đợt cập nhật dữ liệu.</p>
+          <p>
+            Mail CSKH:
+            <a href="mailto:cskh01@hocmai.vn">cskh01@hocmai.vn</a>
+          </p>
+          <p>
+            Zalo CSKH:
+            <a
+              href="https://zalo.me/37577140078644322"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Zalo OA Trung tâm HOCMAI</a>
+          </p>
         </div>
       </div>
     </footer>
