@@ -1,5 +1,6 @@
-const API_URL =
-  "https://script.google.com/macros/s/AKfycbxAv_9qruzkWTmNZz4-4n6OlZ_3ytBI2-5P-KPjW_Fqbgv25PjnCYm2lAoS4sbcI8DlMQ/exec?action=getAll&sheet=Data";
+const API_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbxAv_9qruzkWTmNZz4-4n6OlZ_3ytBI2-5P-KPjW_Fqbgv25PjnCYm2lAoS4sbcI8DlMQ/exec";
+const API_SHEET_NAME = "Data";
 
 const KEY_LINK_TOAN = "Link kết quả";
 const KEY_LINK_VAN = "Link kết quả_2";
@@ -11,7 +12,7 @@ const form = document.querySelector("#lookup-form");
 const messageEl = document.querySelector("#lookup-message");
 const resultCard = document.querySelector("#result-card");
 const tableBody = document.querySelector("#result-table-body");
-const compositeCell = document.querySelector("#result-composite-score");
+const compositeScoreText = document.querySelector("#result-composite-score-text");
 const submitBtn = document.querySelector("#lookup-submit");
 const candidateInput = document.querySelector("#candidate-id");
 
@@ -25,6 +26,8 @@ const scoreChartWrap = document.querySelector("#score-chart-wrap");
 const scoreChart = document.querySelector("#score-chart");
 const scoreChartYAxis = document.querySelector("#score-chart-y-axis");
 const scoreChartHint = document.querySelector("#score-chart-hint");
+const scholarshipSection = document.querySelector("#scholarship-section");
+const scholarshipTrigger = document.querySelector("#scholarship-trigger");
 
 let cachedRows = null;
 
@@ -50,7 +53,7 @@ function displayText(value) {
 function clearResult() {
   resultCard.classList.add("hidden");
   tableBody.textContent = "";
-  compositeCell.textContent = "";
+  if (compositeScoreText) compositeScoreText.textContent = "";
   if (summaryName) summaryName.textContent = "";
   if (summaryPhone) summaryPhone.textContent = "";
   if (summaryExamScore) summaryExamScore.textContent = "";
@@ -60,6 +63,17 @@ function clearResult() {
   if (scoreChartYAxis) scoreChartYAxis.textContent = "";
   if (scoreChartHint) scoreChartHint.textContent = "";
   if (scoreChartWrap) scoreChartWrap.hidden = true;
+  if (scholarshipSection) scholarshipSection.classList.add("hidden");
+}
+
+function showScholarship() {
+  if (!scholarshipSection) return;
+  scholarshipSection.classList.remove("hidden");
+  scholarshipSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+if (scholarshipTrigger) {
+  scholarshipTrigger.addEventListener("click", showScholarship);
 }
 
 function parseObtainedScore(raw) {
@@ -227,6 +241,55 @@ function renderScoreChart(rows, studentTotal) {
   scoreChartWrap.hidden = false;
 }
 
+function renderScoreChartFromBins(bins, studentTotal, youBinIndex) {
+  if (!scoreChart || !scoreChartWrap || !scoreChartHint) return;
+
+  if (!bins || !bins.length) {
+    scoreChartWrap.hidden = true;
+    return;
+  }
+
+  const maxCount = Math.max(...bins.map((b) => b.count), 1);
+  renderYAxisScale(maxCount);
+
+  scoreChart.textContent = "";
+  scoreChartHint.textContent = `Thanh màu đỏ là khoảng điểm chứa tổng điểm xét tuyển của bạn (${formatScore(studentTotal)} điểm).`;
+
+  scoreChartWrap.hidden = false;
+  for (let i = 0; i < bins.length; i++) {
+    const bin = bins[i];
+    const col = document.createElement("div");
+    col.className = "chart-col";
+    if (i === youBinIndex) col.classList.add("chart-col--you");
+
+    const countEl = document.createElement("span");
+    countEl.className = "chart-col-count";
+    countEl.textContent = String(bin.count);
+
+    const wrap = document.createElement("div");
+    wrap.className = "chart-col-bar-wrap";
+    const bar = document.createElement("div");
+    bar.className = "chart-col-bar";
+
+    const pct = maxCount > 0 ? (bin.count / maxCount) * 100 : 0;
+    if (bin.count === 0) {
+      bar.style.height = "0";
+      bar.style.minHeight = "0";
+    } else {
+      bar.style.minHeight = "2px";
+      bar.style.height = `${pct}%`;
+    }
+    wrap.appendChild(bar);
+
+    const xlabel = document.createElement("span");
+    xlabel.className = "chart-col-xlabel";
+    xlabel.textContent = bin.label;
+
+    col.append(countEl, wrap, xlabel);
+    scoreChart.appendChild(col);
+  }
+}
+
 function normalizePhoneToken(value) {
   return String(value).trim().replace(/\s+/g, "");
 }
@@ -273,7 +336,9 @@ function appendResultLink(cell, url) {
 async function loadRows() {
   if (cachedRows) return cachedRows;
 
-  const response = await fetch(API_URL);
+  const response = await fetch(
+    `${API_SCRIPT_URL}?action=getAll&sheet=${encodeURIComponent(API_SHEET_NAME)}`
+  );
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}`);
   }
@@ -283,6 +348,24 @@ async function loadRows() {
   }
   cachedRows = json.data;
   return cachedRows;
+}
+
+async function fetchStudentByPhone(phoneRaw) {
+  const url = `${API_SCRIPT_URL}?action=getByPhone&sheet=${encodeURIComponent(
+    API_SHEET_NAME
+  )}&phone=${encodeURIComponent(phoneRaw)}`;
+
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+
+  const json = await response.json();
+  if (!json || json.status !== true) {
+    throw new Error(json?.message ? String(json.message) : "Not found");
+  }
+
+  return json;
 }
 
 function renderSummary(record) {
@@ -295,13 +378,17 @@ function renderSummary(record) {
   if (summaryRoom) summaryRoom.textContent = displayText(record[KEY_ROOM]);
 }
 
-function renderTable(record, allRows) {
-  renderSummary(record);
+function renderTable(payload) {
+  const student = payload.student;
+  const computed = payload.computed;
+  const rankInfo = payload.rank;
+  const histogram = payload.histogram;
 
-  const { toan, van, anh } = subjectScores(record);
-  const total = compositeScore({ toan, van, anh });
-  const n = allRows.length;
-  const rank = rankByTotal(allRows, total);
+  renderSummary(student);
+
+  const { toan, van, anh, total } = computed;
+  const n = rankInfo?.n ?? 0;
+  const rank = rankInfo?.rank ?? 0;
 
   if (summaryRank) {
     summaryRank.textContent = `Hạng ${rank} / ${n} thí sinh (theo tổng điểm xét tuyển)`;
@@ -311,17 +398,17 @@ function renderTable(record, allRows) {
     {
       mon: "Toán",
       diem: formatScore(toan),
-      link: record[KEY_LINK_TOAN],
+      link: student[KEY_LINK_TOAN],
     },
     {
       mon: "Văn",
       diem: formatScore(van),
-      link: record[KEY_LINK_VAN],
+      link: student[KEY_LINK_VAN],
     },
     {
       mon: "Anh",
       diem: formatScore(anh),
-      link: record[KEY_LINK_ANH],
+      link: student[KEY_LINK_ANH],
     },
   ];
 
@@ -340,8 +427,8 @@ function renderTable(record, allRows) {
     tableBody.appendChild(tr);
   }
 
-  compositeCell.textContent = formatScore(total);
-  renderScoreChart(allRows, total);
+  if (compositeScoreText) compositeScoreText.textContent = formatScore(total);
+  renderScoreChartFromBins(histogram?.bins, total, histogram?.youBinIndex);
   resultCard.classList.remove("hidden");
 }
 
@@ -362,18 +449,16 @@ form.addEventListener("submit", async (event) => {
   setFormLoading(true);
 
   try {
-    const rows = await loadRows();
-    const matched = rows.find((row) => recordMatchesInput(row, originalInput));
-
-    if (!matched) {
-      setMessage("Không tìm thấy kết quả. Vui lòng kiểm tra lại số báo danh trong cột Phone.");
-      return;
-    }
-
-    renderTable(matched, rows);
-  } catch {
+    const result = await fetchStudentByPhone(originalInput);
+    renderTable(result);
+  } catch (err) {
     clearResult();
-    setMessage("Không tải được dữ liệu. Vui lòng thử lại sau.");
+    const msg = err?.message ? String(err.message) : "";
+    if (msg === "Not found") {
+      setMessage("Không tìm thấy kết quả. Vui lòng kiểm tra lại số báo danh trong cột Phone.");
+    } else {
+      setMessage("Không tải được dữ liệu. Vui lòng thử lại sau.");
+    }
   } finally {
     setFormLoading(false);
   }

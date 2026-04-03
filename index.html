@@ -96,7 +96,18 @@
                   <tfoot>
                     <tr class="result-total-row">
                       <td><strong>Điểm xét tuyển (Toán×2 + Văn×2 + Anh)</strong></td>
-                      <td colspan="2" id="result-composite-score"></td>
+                      <td colspan="2">
+                        <div class="composite-score-wrap">
+                          <span id="result-composite-score-text"></span>
+                          <button
+                            type="button"
+                            id="scholarship-trigger"
+                            class="scholarship-trigger scholarship-trigger--inline"
+                          >
+                            học bổng: <span id="scholarship-percent-inline">30%</span>
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   </tfoot>
                 </table>
@@ -115,6 +126,36 @@
                     <div class="histogram-bars" id="score-chart"></div>
                   </div>
                 </div>
+              </div>
+            </section>
+
+            <section
+              id="scholarship-section"
+              class="scholarship-section hidden"
+              aria-label="Học bổng"
+            >
+              <h3 class="scholarship-title">Dùng học bổng ngay!</h3>
+              <p class="scholarship-lead">
+                <span class="scholarship-label">học bổng:</span>
+                <strong class="scholarship-percent" id="scholarship-percent">30%</strong>
+              </p>
+              <div class="scholarship-actions">
+                <a
+                  class="scholarship-action"
+                  href="https://hocmai.link/tC4KC2"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Lớp luyện thi trực tiếp
+                </a>
+                <a
+                  class="scholarship-action scholarship-action--accent"
+                  href="https://hocmai.link/WwODSn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Khóa luyện đề online
+                </a>
               </div>
             </section>
           </div>

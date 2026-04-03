@@ -461,6 +461,118 @@ h1 {
   display: none !important;
 }
 
+.scholarship-section {
+  margin-top: 1.15rem;
+  padding: 1rem 1.05rem;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(7, 57, 119, 0.12);
+  border-radius: 16px;
+}
+
+.scholarship-title {
+  margin: 0 0 0.75rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #b30018;
+  font-weight: 900;
+}
+
+.scholarship-lead {
+  margin: 0 0 0.85rem;
+  text-align: center;
+  font-size: 1rem;
+  color: var(--hocmai-text);
+}
+
+.scholarship-label {
+  font-weight: 700;
+  color: #b30018;
+}
+
+.scholarship-percent {
+  color: #b30018;
+}
+
+.scholarship-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+.scholarship-trigger {
+  display: inline-block;
+  padding: 0.35rem 0.55rem;
+  border-radius: 10px;
+  border: 1px solid rgba(193, 18, 31, 0.4);
+  color: #b30018;
+  font-weight: 900;
+  background: rgba(193, 18, 31, 0.03);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.scholarship-trigger:hover {
+  background: rgba(193, 18, 31, 0.07);
+  transform: translateY(-1px);
+}
+
+.result-cell-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-start;
+}
+
+.composite-score-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.composite-score-wrap #result-composite-score-text {
+  font-weight: 800;
+  color: #355a8a;
+  font-size: 1.05rem;
+}
+
+.scholarship-trigger--inline {
+  padding: 0.35rem 0.6rem;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.scholarship-action {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.85rem 0.9rem;
+  border: 2px solid #c1121f;
+  border-radius: 12px;
+  color: #c1121f;
+  font-weight: 800;
+  text-decoration: none;
+  background: rgba(193, 18, 31, 0.02);
+  transition: transform 120ms ease, background 120ms ease;
+}
+
+.scholarship-action:hover {
+  transform: translateY(-1px);
+  background: rgba(193, 18, 31, 0.06);
+}
+
+.scholarship-action--accent {
+  background: rgba(193, 18, 31, 0.04);
+}
+
+@media (max-width: 560px) {
+  .scholarship-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 .score-chart-title {
   margin: 0 0 0.35rem;
   font-size: 0.95rem;
