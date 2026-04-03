@@ -12,7 +12,8 @@ const messageEl = document.querySelector("#lookup-message");
 const resultCard = document.querySelector("#result-card");
 const tableBody = document.querySelector("#result-table-body");
 const compositeCell = document.querySelector("#result-composite-score");
-const submitBtn = form?.querySelector('button[type="submit"]');
+const submitBtn = document.querySelector("#lookup-submit");
+const candidateInput = document.querySelector("#candidate-id");
 
 const summaryName = document.querySelector("#summary-name");
 const summaryPhone = document.querySelector("#summary-phone");
@@ -26,6 +27,16 @@ const scoreChartYAxis = document.querySelector("#score-chart-y-axis");
 const scoreChartHint = document.querySelector("#score-chart-hint");
 
 let cachedRows = null;
+
+function setFormLoading(loading) {
+  if (!form) return;
+  form.classList.toggle("is-loading", loading);
+  form.setAttribute("aria-busy", loading ? "true" : "false");
+  if (submitBtn) submitBtn.disabled = loading;
+  if (candidateInput) candidateInput.disabled = loading;
+  const label = submitBtn?.querySelector(".submit-text");
+  if (label) label.textContent = loading ? "Đang tra cứu..." : "Tra cứu";
+}
 
 function setMessage(text) {
   messageEl.textContent = text;
@@ -348,7 +359,7 @@ form.addEventListener("submit", async (event) => {
 
   clearResult();
   setMessage("");
-  if (submitBtn) submitBtn.disabled = true;
+  setFormLoading(true);
 
   try {
     const rows = await loadRows();
@@ -364,6 +375,6 @@ form.addEventListener("submit", async (event) => {
     clearResult();
     setMessage("Không tải được dữ liệu. Vui lòng thử lại sau.");
   } finally {
-    if (submitBtn) submitBtn.disabled = false;
+    setFormLoading(false);
   }
 });

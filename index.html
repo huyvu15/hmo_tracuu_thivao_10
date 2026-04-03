@@ -19,14 +19,14 @@
   <body>
     <header class="brand-header">
       <div class="header-inner">
-        <a class="brand-mark" href="#" aria-label="Trang chủ HOCMAI">
+        <a class="brand-mark" href="./index.html" aria-label="Trang chủ HOCMAI">
           <img class="brand-logo" src="./assets/logo-hocmai.png" alt="Logo HOCMAI" />
           <span class="brand-sub">Nền tảng học trực tuyến số 1 Việt Nam</span>
         </a>
         <nav class="nav-links" aria-label="Điều hướng">
-          <a href="#tra-cuu">Tra cứu điểm</a>
-          <a href="#huong-dan">Hướng dẫn</a>
-          <a href="#faq">Câu hỏi thường gặp</a>
+          <a href="./index.html" aria-current="page">Tra cứu điểm</a>
+          <a href="./huong-dan.html">Hướng dẫn</a>
+          <a href="./faq.html">Câu hỏi thường gặp</a>
         </nav>
       </div>
     </header>
@@ -51,7 +51,10 @@
                 autocomplete="off"
                 required
               />
-              <button type="submit">Tra cứu</button>
+              <button type="submit" id="lookup-submit">
+                <span class="submit-spinner" aria-hidden="true"></span>
+                <span class="submit-text">Tra cứu</span>
+              </button>
               <p id="lookup-message" class="form-message" role="status" aria-live="polite"></p>
             </form>
 
@@ -114,8 +117,6 @@
                 </div>
               </div>
             </section>
-            <div id="huong-dan" class="visually-muted-anchor" aria-hidden="true"></div>
-            <div id="faq" class="visually-muted-anchor" aria-hidden="true"></div>
           </div>
         </div>
       </section>
