@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tra cứu điểm thi vào 10 | HOCMAI</title>
+    <meta
+      name="description"
+      content="Trang tra cứu điểm thi vào lớp 10 với giao diện chuẩn nhận diện thương hiệu HOCMAI."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="brand-header">
+      <div class="container header-inner">
+        <a class="brand-mark" href="#" aria-label="Trang chủ HOCMAI">
+          <img class="brand-logo" src="./assets/logo-hocmai.png" alt="Logo HOCMAI" />
+          <span class="brand-sub">Nền tảng học trực tuyến số 1 Việt Nam</span>
+        </a>
+        <nav class="nav-links" aria-label="Điều hướng">
+          <a href="#tra-cuu">Tra cứu điểm</a>
+          <a href="#huong-dan">Hướng dẫn</a>
+          <a href="#faq">Câu hỏi thường gặp</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section id="tra-cuu" class="lookup-section">
+        <div class="container">
+          <div class="lookup-wrapper">
+            <div class="section-title">
+              <h1>Tra cứu điểm thi vào 10</h1>
+              <p>Nhập số báo danh để xem kết quả.</p>
+            </div>
+
+            <form id="lookup-form" class="lookup-form simple-form" novalidate>
+              <label for="candidate-id">Số báo danh</label>
+              <input
+                id="candidate-id"
+                name="candidateId"
+                type="text"
+                placeholder="Nhập số báo danh"
+                maxlength="12"
+                autocomplete="off"
+                required
+              />
+              <button type="submit">Tra cứu</button>
+              <p id="lookup-message" class="form-message" role="status" aria-live="polite"></p>
+            </form>
+
+            <section id="result-card" class="result-card hidden" aria-label="Kết quả tra cứu">
+              <div class="result-header">
+                <h3>Kết quả điểm thi</h3>
+                <span id="result-status" class="status-pill">Đạt</span>
+              </div>
+
+              <div class="candidate-meta">
+                <p><strong>Họ tên:</strong> <span id="result-name"></span></p>
+                <p><strong>Số báo danh:</strong> <span id="result-id"></span></p>
+                <p><strong>Hội đồng thi:</strong> <span id="result-location"></span></p>
+              </div>
+
+              <div class="score-grid">
+                <article>
+                  <span>Toán</span>
+                  <strong id="score-math"></strong>
+                </article>
+                <article>
+                  <span>Ngữ văn</span>
+                  <strong id="score-literature"></strong>
+                </article>
+                <article>
+                  <span>Tiếng Anh</span>
+                  <strong id="score-english"></strong>
+                </article>
+                <article>
+                  <span>Điểm ưu tiên</span>
+                  <strong id="score-priority"></strong>
+                </article>
+              </div>
+
+              <div class="result-footer">
+                <p><strong>Tổng điểm xét tuyển:</strong> <span id="score-total"></span></p>
+                <p><strong>Nguyện vọng 1:</strong> <span id="result-preference"></span></p>
+              </div>
+            </section>
+            <div id="huong-dan" class="visually-muted-anchor" aria-hidden="true"></div>
+            <div id="faq" class="visually-muted-anchor" aria-hidden="true"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <p class="footer-brand">HOCMAI</p>
+          <p>
+            Hệ thống giáo dục trực tuyến hỗ trợ học sinh chinh phục kỳ thi quan trọng
+            bằng lộ trình học tập bài bản.
+          </p>
+        </div>
+        <div>
+          <p><strong>Hotline:</strong> 1900 6933</p>
+          <p><strong>Email:</strong> support@hocmai.vn</p>
+          <p><strong>Website:</strong> hocmai.vn</p>
+        </div>
+        <div>
+          <p><strong>Lưu ý:</strong> Trang hiển thị kết quả tra cứu theo từng đợt cập nhật dữ liệu.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
