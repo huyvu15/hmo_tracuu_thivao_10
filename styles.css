@@ -449,9 +449,15 @@ h1 {
   font-weight: 600;
 }
 
-.result-total-row td:last-child {
+.result-total-row .result-total-score {
   font-size: 1.05rem;
+  font-weight: 800;
   color: #355a8a;
+}
+
+.result-total-scholarship-cell {
+  text-align: left;
+  vertical-align: middle;
 }
 
 .score-chart-wrap {
@@ -502,49 +508,28 @@ h1 {
   gap: 0.85rem;
 }
 
-.scholarship-trigger {
-  display: inline-block;
-  padding: 0.35rem 0.55rem;
-  border-radius: 10px;
-  border: 1px solid rgba(193, 18, 31, 0.4);
+.scholarship-text-btn {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
   color: #b30018;
-  font-weight: 900;
-  background: rgba(193, 18, 31, 0.03);
   cursor: pointer;
+  text-align: left;
   text-decoration: none;
-  transition: background 120ms ease, transform 120ms ease;
+  display: inline;
 }
 
-.scholarship-trigger:hover {
-  background: rgba(193, 18, 31, 0.07);
-  transform: translateY(-1px);
+.scholarship-text-btn:hover {
+  text-decoration: underline;
 }
 
-.result-cell-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  align-items: flex-start;
-}
-
-.composite-score-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.composite-score-wrap #result-composite-score-text {
-  font-weight: 800;
-  color: #355a8a;
-  font-size: 1.05rem;
-}
-
-.scholarship-trigger--inline {
-  padding: 0.35rem 0.6rem;
-  border-radius: 10px;
-  white-space: nowrap;
+.scholarship-text-btn:focus-visible {
+  outline: 2px solid var(--hocmai-blue);
+  outline-offset: 2px;
 }
 
 .scholarship-action {
@@ -601,11 +586,12 @@ h1 {
   flex-direction: column;
   justify-content: space-between;
   flex-shrink: 0;
-  width: 2.25rem;
+  width: 2.5rem;
   height: 220px;
   box-sizing: border-box;
-  font-size: 0.68rem;
-  color: var(--hocmai-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #5f6b7a;
   text-align: right;
   line-height: 1.2;
 }
@@ -627,22 +613,23 @@ h1 {
   display: flex;
   align-items: stretch;
   justify-content: flex-start;
-  gap: clamp(2px, 1vw, 8px);
+  gap: clamp(4px, 1.2vw, 10px);
   height: calc(220px + 2.85rem);
   min-width: min(100%, 560px);
-  padding: 0 0.25rem 0 0.35rem;
-  border-left: 1px solid rgba(42, 111, 181, 0.12);
-  border-bottom: 1px solid rgba(42, 111, 181, 0.12);
-  background-color: rgba(255, 255, 255, 0.75);
+  padding: 0 0.35rem 0 0.45rem;
+  border-left: 1px solid #dde1e6;
+  border-bottom: 1px solid #dde1e6;
+  background-color: #ffffff;
   background-image: repeating-linear-gradient(
     to bottom,
     transparent,
-    transparent calc(20% - 1px),
-    rgba(42, 111, 181, 0.04) calc(20% - 1px),
-    rgba(42, 111, 181, 0.04) 20%
+    transparent calc(25% - 1px),
+    #e8eaed calc(25% - 1px),
+    #e8eaed 25%
   );
   background-size: 100% 100%;
   box-sizing: border-box;
+  border-radius: 0 6px 0 0;
 }
 
 .chart-col {
@@ -657,16 +644,22 @@ h1 {
 }
 
 .chart-col-count {
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: var(--hocmai-muted);
-  margin-bottom: 3px;
+  color: #5f6b7a;
+  margin-bottom: 4px;
   min-height: 1.1em;
   line-height: 1;
 }
 
+.chart-col-count--zero {
+  opacity: 0.35;
+}
+
 .chart-col--you .chart-col-count {
-  color: #c65a5f;
+  color: #e53935;
+  font-weight: 800;
+  opacity: 1;
 }
 
 .chart-col-bar-wrap {
@@ -681,25 +674,27 @@ h1 {
 }
 
 .chart-col-bar {
-  width: 78%;
-  max-width: 2rem;
+  width: 72%;
+  max-width: 1.85rem;
   min-height: 0;
-  border-radius: 6px 6px 0 0;
-  background: linear-gradient(180deg, #b3cbf0 0%, #93b4e8 100%);
+  border-radius: 5px 5px 0 0;
+  background: #3498db;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
   transition: height 0.25s ease-out;
 }
 
 .chart-col--you .chart-col-bar {
-  background: linear-gradient(180deg, #f4b4b6 0%, #e5989b 100%);
+  background: #e53935;
+  box-shadow: 0 1px 2px rgba(229, 57, 53, 0.35);
 }
 
 .chart-col-xlabel {
-  margin-top: 6px;
-  font-size: 0.62rem;
+  margin-top: 8px;
+  font-size: 0.6rem;
   line-height: 1.15;
-  color: var(--hocmai-muted);
+  color: #5f6b7a;
   text-align: center;
-  transform: rotate(-42deg);
+  transform: rotate(-45deg);
   transform-origin: center top;
   white-space: nowrap;
   height: 2.85rem;
@@ -721,8 +716,8 @@ h1 {
   }
 
   .chart-col-xlabel {
-    font-size: 0.55rem;
-    transform: rotate(-52deg);
+    font-size: 0.52rem;
+    transform: rotate(-48deg);
   }
 }
 

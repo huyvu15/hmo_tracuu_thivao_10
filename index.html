@@ -41,7 +41,7 @@
             </div>
 
             <form id="lookup-form" class="lookup-form simple-form" novalidate>
-              <label for="candidate-id">Số báo danh (Phone)</label>
+              <label for="candidate-id">Số báo danh</label>
               <input
                 id="candidate-id"
                 name="candidateId"
@@ -96,24 +96,18 @@
                   <tfoot>
                     <tr class="result-total-row">
                       <td><strong>Điểm xét tuyển (Toán×2 + Văn×2 + Anh)</strong></td>
-                      <td colspan="2">
-                        <div class="composite-score-wrap">
-                          <span id="result-composite-score-text"></span>
-                          <button
-                            type="button"
-                            id="scholarship-trigger"
-                            class="scholarship-trigger scholarship-trigger--inline"
-                          >
-                            học bổng: <span id="scholarship-percent-inline">30%</span>
-                          </button>
-                        </div>
+                      <td class="result-total-score" id="result-composite-score-text"></td>
+                      <td class="result-total-scholarship-cell">
+                        <button type="button" id="scholarship-trigger" class="scholarship-text-btn">
+                          Học bổng: <span id="scholarship-percent-inline">30%</span>
+                        </button>
                       </td>
                     </tr>
                   </tfoot>
                 </table>
               </div>
               <div class="score-chart-wrap" id="score-chart-wrap" hidden>
-                <p class="score-chart-title">Phân bố tổng điểm xét tuyển (toàn bộ dữ liệu)</p>
+                <p class="score-chart-title">Phân bố tổng điểm xét tuyển</p>
                 <p class="score-chart-hint" id="score-chart-hint"></p>
                 <div
                   class="histogram"

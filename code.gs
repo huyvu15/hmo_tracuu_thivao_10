@@ -151,6 +151,9 @@ function getByPhoneData(sheetName, phoneRaw) {
 
   for (let r = 1; r < allValues.length; r++) {
     const row = allValues[r];
+    const phoneVal = row[phoneIndex];
+    // getDataRange() often includes many blank rows; skip them so histogram/rank match real students (Phone = SBD).
+    if (!normalizePhoneToken(phoneVal)) continue;
 
     const toan = sumPointsFromRow(row, pointIdxToan);
     const van = sumPointsFromRow(row, pointIdxVan);
@@ -158,7 +161,6 @@ function getByPhoneData(sheetName, phoneRaw) {
     const total = 2 * toan + 2 * van + anh;
     totals.push(total);
 
-    const phoneVal = row[phoneIndex];
     if (!matchedRow && input && matchPhone(phoneVal, input)) {
       matchedRow = row;
       studentComputed = { toan, van, anh, total };
@@ -258,7 +260,7 @@ function formatBinEdge(x) {
   return String(r);
 }
 
-function buildHistogramBins(values, binCount) {
+function buildHistogramBins(values, targetBinCount) {
   if (!values || values.length === 0) return [];
 
   const min = Math.min.apply(null, values);
@@ -269,22 +271,49 @@ function buildHistogramBins(values, binCount) {
       high: max,
       label: formatBinEdge(min),
       dataMax: max,
-      isLast: true
+      isLast: true,
+      count: values.length
     }];
   }
 
-  const n = Math.min(Math.max(binCount, 8), 20);
-  const step = (max - min) / n;
-  const bins = [];
+  const span = max - min;
+  const t = Math.min(Math.max(targetBinCount, 10), 16);
+  const rawWidth = span / t;
+  const widthCandidates = [0.5, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10, 15, 20];
+  let binWidth = widthCandidates[widthCandidates.length - 1];
+  for (let i = 0; i < widthCandidates.length; i++) {
+    if (widthCandidates[i] >= rawWidth * 0.65) {
+      binWidth = widthCandidates[i];
+      break;
+    }
+    binWidth = widthCandidates[i];
+  }
 
-  for (let i = 0; i < n; i++) {
-    const low = min + i * step;
-    const high = i === n - 1 ? max : min + (i + 1) * step;
-    const isLast = i === n - 1;
-    const label = isLast
-      ? `${formatBinEdge(low)}-${formatBinEdge(max)}`
-      : `${formatBinEdge(low)}-${formatBinEdge(high)}`;
-    bins.push({ low, high, label, dataMax: max, isLast });
+  const start = Math.floor(min / binWidth) * binWidth;
+  const bins = [];
+  let low = start;
+
+  while (low < max - 1e-9 && bins.length < 48) {
+    const next = low + binWidth;
+    const isLast = next >= max - 1e-9;
+    if (isLast) {
+      bins.push({
+        low: low,
+        high: max,
+        label: `${formatBinEdge(low)}-${formatBinEdge(max)}`,
+        dataMax: max,
+        isLast: true
+      });
+      break;
+    }
+    bins.push({
+      low: low,
+      high: next,
+      label: `${formatBinEdge(low)}-${formatBinEdge(next)}`,
+      dataMax: max,
+      isLast: false
+    });
+    low = next;
   }
 
   for (let b = 0; b < bins.length; b++) {
@@ -300,7 +329,7 @@ function buildHistogramBins(values, binCount) {
       }
       if (inBin) count++;
     }
-    bins[b].count = count;
+    bin.count = count;
   }
 
   return bins;

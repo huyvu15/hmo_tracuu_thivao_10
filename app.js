@@ -135,7 +135,7 @@ function formatBinEdge(x) {
   return String(r);
 }
 
-function buildHistogramBins(values, binCount = 14) {
+function buildHistogramBins(values, targetBinCount = 14) {
   if (!values.length) return [];
   const min = Math.min(...values);
   const max = Math.max(...values);
@@ -147,21 +147,49 @@ function buildHistogramBins(values, binCount = 14) {
         label: formatBinEdge(min),
         dataMax: max,
         isLast: true,
+        count: values.length,
       },
     ];
   }
 
-  const n = Math.min(Math.max(binCount, 8), 20);
-  const step = (max - min) / n;
+  const span = max - min;
+  const t = Math.min(Math.max(targetBinCount, 10), 16);
+  const rawWidth = span / t;
+  const widthCandidates = [0.5, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10, 15, 20];
+  let binWidth = widthCandidates[widthCandidates.length - 1];
+  for (let i = 0; i < widthCandidates.length; i += 1) {
+    if (widthCandidates[i] >= rawWidth * 0.65) {
+      binWidth = widthCandidates[i];
+      break;
+    }
+    binWidth = widthCandidates[i];
+  }
+
+  const start = Math.floor(min / binWidth) * binWidth;
   const bins = [];
-  for (let i = 0; i < n; i += 1) {
-    const low = min + i * step;
-    const high = i === n - 1 ? max : min + (i + 1) * step;
-    const isLast = i === n - 1;
-    const label = isLast
-      ? `${formatBinEdge(low)}-${formatBinEdge(max)}`
-      : `${formatBinEdge(low)}-${formatBinEdge(high)}`;
-    bins.push({ low, high, label, dataMax: max, isLast });
+  let low = start;
+
+  while (low < max - 1e-9 && bins.length < 48) {
+    const next = low + binWidth;
+    const isLast = next >= max - 1e-9;
+    if (isLast) {
+      bins.push({
+        low,
+        high: max,
+        label: `${formatBinEdge(low)}-${formatBinEdge(max)}`,
+        dataMax: max,
+        isLast: true,
+      });
+      break;
+    }
+    bins.push({
+      low,
+      high: next,
+      label: `${formatBinEdge(low)}-${formatBinEdge(next)}`,
+      dataMax: max,
+      isLast: false,
+    });
+    low = next;
   }
 
   for (const b of bins) {
@@ -174,21 +202,34 @@ function buildHistogramBins(values, binCount = 14) {
   return bins;
 }
 
+function niceAxisMax(n) {
+  const x = Math.max(n, 1);
+  const pow10 = 10 ** Math.floor(Math.log10(x));
+  const f = x / pow10;
+  let nf = 10;
+  if (f <= 1) nf = 1;
+  else if (f <= 2) nf = 2;
+  else if (f <= 5) nf = 5;
+  const candidate = nf * pow10;
+  return Math.max(candidate, x);
+}
+
 function valueInBin(v, bin) {
   if (bin.isLast) return v >= bin.low && v <= (bin.dataMax != null ? bin.dataMax : bin.high);
   return v >= bin.low && v < bin.high;
 }
 
-function renderYAxisScale(maxCount) {
+function renderYAxisScale(axisMax) {
   if (!scoreChartYAxis) return;
   scoreChartYAxis.textContent = "";
-  const top = document.createElement("span");
-  top.textContent = String(maxCount);
-  const mid = document.createElement("span");
-  mid.textContent = maxCount > 2 ? String(Math.round(maxCount / 2)) : "";
-  const bot = document.createElement("span");
-  bot.textContent = "0";
-  scoreChartYAxis.append(top, mid, bot);
+  const steps = 5;
+  const cap = Math.max(1, axisMax);
+  for (let i = 0; i < steps; i += 1) {
+    const val = Math.round((cap * (steps - 1 - i)) / (steps - 1));
+    const span = document.createElement("span");
+    span.textContent = String(val);
+    scoreChartYAxis.appendChild(span);
+  }
 }
 
 function renderScoreChart(rows, studentTotal) {
@@ -202,7 +243,8 @@ function renderScoreChart(rows, studentTotal) {
   }
 
   const maxCount = Math.max(...bins.map((b) => b.count), 1);
-  renderYAxisScale(maxCount);
+  const axisMax = niceAxisMax(maxCount);
+  renderYAxisScale(axisMax);
 
   scoreChart.textContent = "";
   scoreChartHint.textContent = `Thanh màu đỏ là khoảng điểm chứa tổng điểm xét tuyển của bạn (${formatScore(studentTotal)} điểm).`;
@@ -214,13 +256,14 @@ function renderScoreChart(rows, studentTotal) {
 
     const countEl = document.createElement("span");
     countEl.className = "chart-col-count";
+    if (bin.count === 0) countEl.classList.add("chart-col-count--zero");
     countEl.textContent = String(bin.count);
 
     const wrap = document.createElement("div");
     wrap.className = "chart-col-bar-wrap";
     const bar = document.createElement("div");
     bar.className = "chart-col-bar";
-    const pct = maxCount > 0 ? (bin.count / maxCount) * 100 : 0;
+    const pct = axisMax > 0 ? (bin.count / axisMax) * 100 : 0;
     if (bin.count === 0) {
       bar.style.height = "0";
       bar.style.minHeight = "0";
@@ -250,7 +293,8 @@ function renderScoreChartFromBins(bins, studentTotal, youBinIndex) {
   }
 
   const maxCount = Math.max(...bins.map((b) => b.count), 1);
-  renderYAxisScale(maxCount);
+  const axisMax = niceAxisMax(maxCount);
+  renderYAxisScale(axisMax);
 
   scoreChart.textContent = "";
   scoreChartHint.textContent = `Thanh màu đỏ là khoảng điểm chứa tổng điểm xét tuyển của bạn (${formatScore(studentTotal)} điểm).`;
@@ -264,6 +308,7 @@ function renderScoreChartFromBins(bins, studentTotal, youBinIndex) {
 
     const countEl = document.createElement("span");
     countEl.className = "chart-col-count";
+    if (bin.count === 0) countEl.classList.add("chart-col-count--zero");
     countEl.textContent = String(bin.count);
 
     const wrap = document.createElement("div");
@@ -271,7 +316,7 @@ function renderScoreChartFromBins(bins, studentTotal, youBinIndex) {
     const bar = document.createElement("div");
     bar.className = "chart-col-bar";
 
-    const pct = maxCount > 0 ? (bin.count / maxCount) * 100 : 0;
+    const pct = axisMax > 0 ? (bin.count / axisMax) * 100 : 0;
     if (bin.count === 0) {
       bar.style.height = "0";
       bar.style.minHeight = "0";
@@ -391,7 +436,7 @@ function renderTable(payload) {
   const rank = rankInfo?.rank ?? 0;
 
   if (summaryRank) {
-    summaryRank.textContent = `Hạng ${rank} / ${n} thí sinh (theo tổng điểm xét tuyển)`;
+    summaryRank.textContent = `Hạng ${rank} / ${n} thí sinh.`;
   }
 
   const rows = [
@@ -440,7 +485,7 @@ form.addEventListener("submit", async (event) => {
 
   if (!originalInput) {
     clearResult();
-    setMessage("Vui lòng nhập số báo danh (Phone).");
+    setMessage("Vui lòng nhập số báo danh.");
     return;
   }
 
