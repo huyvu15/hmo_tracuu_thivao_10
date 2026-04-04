@@ -34,10 +34,10 @@
     <main>
       <section id="tra-cuu" class="lookup-section">
         <div class="container">
-          <div class="lookup-wrapper">
+          <div class="lookup-wrapper">  
             <div class="section-title">
               <h1>Tra cứu điểm thi vào 10</h1>
-              <p>Nhập mã trong cột Phone (số báo danh) để xem kết quả.</p>
+              <p>Nhập mã trong cột số báo danh để xem kết quả.</p>
             </div>
 
             <form id="lookup-form" class="lookup-form simple-form" novalidate>
@@ -98,14 +98,36 @@
                       <td><strong>Điểm xét tuyển (Toán×2 + Văn×2 + Anh)</strong></td>
                       <td class="result-total-score" id="result-composite-score-text"></td>
                       <td class="result-total-scholarship-cell">
-                        <button type="button" id="scholarship-trigger" class="scholarship-text-btn">
-                          Học bổng: <span id="scholarship-percent-inline">30%</span>
-                        </button>
+                        <span class="scholarship-inline-line">
+                          Học bổng: <span id="scholarship-percent-inline">—</span>
+                        </span>
                       </td>
                     </tr>
                   </tfoot>
                 </table>
               </div>
+              <section id="scholarship-section" class="scholarship-section" aria-label="Học bổng">
+                <h3 class="scholarship-title">Dùng học bổng ngay!</h3>
+                <p class="scholarship-promo-body" id="scholarship-promo-body"></p>
+                <div class="scholarship-actions">
+                  <a
+                    class="scholarship-action"
+                    href="https://hocmai.link/tC4KC2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Lớp luyện thi trực tiếp
+                  </a>
+                  <a
+                    class="scholarship-action scholarship-action--accent"
+                    href="https://hocmai.link/WwODSn"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Khóa luyện đề online
+                  </a>
+                </div>
+              </section>
               <div class="score-chart-wrap" id="score-chart-wrap" hidden>
                 <p class="score-chart-title">Phân bố tổng điểm xét tuyển</p>
                 <p class="score-chart-hint" id="score-chart-hint"></p>
@@ -120,36 +142,6 @@
                     <div class="histogram-bars" id="score-chart"></div>
                   </div>
                 </div>
-              </div>
-            </section>
-
-            <section
-              id="scholarship-section"
-              class="scholarship-section hidden"
-              aria-label="Học bổng"
-            >
-              <h3 class="scholarship-title">Dùng học bổng ngay!</h3>
-              <p class="scholarship-lead">
-                <span class="scholarship-label">học bổng:</span>
-                <strong class="scholarship-percent" id="scholarship-percent">30%</strong>
-              </p>
-              <div class="scholarship-actions">
-                <a
-                  class="scholarship-action"
-                  href="https://hocmai.link/tC4KC2"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Lớp luyện thi trực tiếp
-                </a>
-                <a
-                  class="scholarship-action scholarship-action--accent"
-                  href="https://hocmai.link/WwODSn"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Khóa luyện đề online
-                </a>
               </div>
             </section>
           </div>

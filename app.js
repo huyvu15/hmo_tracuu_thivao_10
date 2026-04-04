@@ -7,6 +7,7 @@ const KEY_LINK_VAN = "Link kết quả_2";
 const KEY_LINK_ANH = "Link kết quả_3";
 const KEY_EXAM_SCORE = "Điểm thi";
 const KEY_ROOM = "Phòng thi";
+const KEY_PROMO = "Mức ưu đãi";
 
 const form = document.querySelector("#lookup-form");
 const messageEl = document.querySelector("#lookup-message");
@@ -26,8 +27,8 @@ const scoreChartWrap = document.querySelector("#score-chart-wrap");
 const scoreChart = document.querySelector("#score-chart");
 const scoreChartYAxis = document.querySelector("#score-chart-y-axis");
 const scoreChartHint = document.querySelector("#score-chart-hint");
-const scholarshipSection = document.querySelector("#scholarship-section");
-const scholarshipTrigger = document.querySelector("#scholarship-trigger");
+const scholarshipPercentInline = document.querySelector("#scholarship-percent-inline");
+const scholarshipPromoBody = document.querySelector("#scholarship-promo-body");
 
 let cachedRows = null;
 
@@ -63,17 +64,8 @@ function clearResult() {
   if (scoreChartYAxis) scoreChartYAxis.textContent = "";
   if (scoreChartHint) scoreChartHint.textContent = "";
   if (scoreChartWrap) scoreChartWrap.hidden = true;
-  if (scholarshipSection) scholarshipSection.classList.add("hidden");
-}
-
-function showScholarship() {
-  if (!scholarshipSection) return;
-  scholarshipSection.classList.remove("hidden");
-  scholarshipSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
-}
-
-if (scholarshipTrigger) {
-  scholarshipTrigger.addEventListener("click", showScholarship);
+  if (scholarshipPercentInline) scholarshipPercentInline.textContent = "—";
+  if (scholarshipPromoBody) scholarshipPromoBody.textContent = "";
 }
 
 function parseObtainedScore(raw) {
@@ -423,6 +415,34 @@ function renderSummary(record) {
   if (summaryRoom) summaryRoom.textContent = displayText(record[KEY_ROOM]);
 }
 
+function extractLeadingPercent(text) {
+  const s = String(text).trim();
+  if (!s) return "";
+  const m = s.match(/^(\d+\s*%)/);
+  if (m) return m[1].replace(/\s+/g, "");
+  const m2 = s.match(/^(\d+%)/);
+  return m2 ? m2[1] : "";
+}
+
+function renderPromo(record) {
+  const raw = record[KEY_PROMO];
+  const full = raw != null && String(raw).trim() !== "" ? String(raw).trim() : "";
+
+  if (!full) {
+    if (scholarshipPercentInline) scholarshipPercentInline.textContent = "—";
+    if (scholarshipPromoBody) scholarshipPromoBody.textContent = "";
+    return;
+  }
+
+  const pct = extractLeadingPercent(full);
+  if (scholarshipPercentInline) {
+    scholarshipPercentInline.textContent = pct || "—";
+  }
+  if (scholarshipPromoBody) {
+    scholarshipPromoBody.textContent = full;
+  }
+}
+
 function renderTable(payload) {
   const student = payload.student;
   const computed = payload.computed;
@@ -430,6 +450,7 @@ function renderTable(payload) {
   const histogram = payload.histogram;
 
   renderSummary(student);
+  renderPromo(student);
 
   const { toan, van, anh, total } = computed;
   const n = rankInfo?.n ?? 0;
