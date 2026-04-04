@@ -102,7 +102,7 @@ function subjectScores(record) {
 }
 
 function compositeScore({ toan, van, anh }) {
-  return 2 * toan + 2 * van + anh;
+  return toan + van + anh;
 }
 
 function totalForRecord(record) {

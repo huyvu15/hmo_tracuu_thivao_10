@@ -158,7 +158,7 @@ function getByPhoneData(sheetName, phoneRaw) {
     const toan = sumPointsFromRow(row, pointIdxToan);
     const van = sumPointsFromRow(row, pointIdxVan);
     const anh = sumPointsFromRow(row, pointIdxAnh);
-    const total = 2 * toan + 2 * van + anh;
+    const total = toan + van + anh;
     totals.push(total);
 
     if (!matchedRow && input && matchPhone(phoneVal, input)) {
