@@ -138,7 +138,7 @@ function getByPhoneData(sheetName, phoneRaw) {
   const pointIdxToan = [];
   const pointIdxVan = [];
   const pointIdxAnh = [];
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 5; i++) {
     pointIdxToan.push(headerIndex[`Point${i}`]);
     pointIdxVan.push(headerIndex[`Point${i}_2`]);
     pointIdxAnh.push(headerIndex[`Point${i}_3`]);
@@ -204,23 +204,9 @@ function normalizePhoneToken(value) {
   return String(value).trim().replace(/\s+/g, "");
 }
 
-function phoneTail(phone) {
-  const p = normalizePhoneToken(phone);
-  if (!p) return "";
-  const i = p.lastIndexOf("-");
-  return i === -1 ? p : p.slice(i + 1);
-}
-
 function matchPhone(phoneValue, input) {
   const phone = normalizePhoneToken(phoneValue);
-  if (!phone) return false;
-
-  if (phone === input) return true;
-  if (phoneTail(phoneValue) === input) return true;
-
-  const tail = phoneTail(phoneValue);
-  const stripLeading = (s) => (s ? s.replace(/^0+/, "") : "0") || "0";
-  return stripLeading(tail) === stripLeading(input);
+  return !!phone && phone === input;
 }
 
 function parseObtainedScore(raw) {

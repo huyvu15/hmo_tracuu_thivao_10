@@ -1,5 +1,5 @@
 const API_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbx6q3WD7rJzfNkDjePan6rrlbwsLmGg49FxNeOUgAySf-iLf9dH3o_4QKDopV3Eyc-LDA/exec";
+  "https://script.google.com/macros/s/AKfycbxFNHvUobhfHFP_6cdWGAyDx8cakKfuH99xMlSGnKLXfSWAl4obbcyANxTba1kBI-JpXA/exec";
 const API_SHEET_NAME = "Data";
 
 const KEY_LINK_TOAN = "Link kết quả";
@@ -85,7 +85,7 @@ function parseObtainedScore(raw) {
 
 function sumPointsFromKeys(record, keySuffix) {
   let sum = 0;
-  for (let i = 1; i <= 6; i += 1) {
+  for (let i = 1; i <= 5; i += 1) {
     const key = keySuffix === "" ? `Point${i}` : `Point${i}_${keySuffix}`;
     if (!Object.prototype.hasOwnProperty.call(record, key)) continue;
     const v = parseObtainedScore(record[key]);
@@ -224,6 +224,55 @@ function renderYAxisScale(axisMax) {
   }
 }
 
+function buildChartColumn(bin, axisMax, highlightYou) {
+  const col = document.createElement("div");
+  col.className = "chart-col";
+  if (highlightYou) col.classList.add("chart-col--you");
+
+  const wrap = document.createElement("div");
+  wrap.className = "chart-col-bar-wrap";
+
+  const bar = document.createElement("button");
+  bar.type = "button";
+  bar.className = "chart-col-bar";
+  bar.setAttribute("aria-label", `Giá trị cột: ${bin.count} thí sinh, khoảng điểm ${bin.label}`);
+  const pct = axisMax > 0 ? (bin.count / axisMax) * 100 : 0;
+  col.style.setProperty("--bar-pct", `${pct}%`);
+  if (bin.count === 0) {
+    bar.style.height = "0";
+    bar.style.minHeight = "0";
+  } else {
+    bar.style.minHeight = "2px";
+    bar.style.height = `${pct}%`;
+  }
+
+  const tooltip = document.createElement("span");
+  tooltip.className = "chart-col-tooltip";
+  const tooltipRange = document.createElement("span");
+  tooltipRange.className = "chart-col-tooltip-range";
+  tooltipRange.textContent = bin.label;
+  const tooltipCount = document.createElement("span");
+  tooltipCount.className = "chart-col-tooltip-count";
+  tooltipCount.textContent = `${bin.count} thí sinh`;
+  tooltip.append(tooltipRange, tooltipCount);
+
+  if (highlightYou) {
+    const fixedValue = document.createElement("span");
+    fixedValue.className = "chart-col-fixed-value";
+    fixedValue.textContent = String(bin.count);
+    wrap.appendChild(fixedValue);
+  }
+
+  wrap.append(bar, tooltip);
+
+  const xlabel = document.createElement("span");
+  xlabel.className = "chart-col-xlabel";
+  xlabel.textContent = bin.label;
+
+  col.append(wrap, xlabel);
+  return col;
+}
+
 function renderScoreChart(rows, studentTotal) {
   if (!scoreChart || !scoreChartWrap || !scoreChartHint) return;
 
@@ -242,34 +291,7 @@ function renderScoreChart(rows, studentTotal) {
   scoreChartHint.textContent = `Thanh màu đỏ là khoảng điểm chứa tổng điểm xét tuyển của bạn (${formatScore(studentTotal)} điểm).`;
 
   for (const bin of bins) {
-    const col = document.createElement("div");
-    col.className = "chart-col";
-    if (valueInBin(studentTotal, bin)) col.classList.add("chart-col--you");
-
-    const countEl = document.createElement("span");
-    countEl.className = "chart-col-count";
-    if (bin.count === 0) countEl.classList.add("chart-col-count--zero");
-    countEl.textContent = String(bin.count);
-
-    const wrap = document.createElement("div");
-    wrap.className = "chart-col-bar-wrap";
-    const bar = document.createElement("div");
-    bar.className = "chart-col-bar";
-    const pct = axisMax > 0 ? (bin.count / axisMax) * 100 : 0;
-    if (bin.count === 0) {
-      bar.style.height = "0";
-      bar.style.minHeight = "0";
-    } else {
-      bar.style.minHeight = "2px";
-      bar.style.height = `${pct}%`;
-    }
-    wrap.appendChild(bar);
-
-    const xlabel = document.createElement("span");
-    xlabel.className = "chart-col-xlabel";
-    xlabel.textContent = bin.label;
-
-    col.append(countEl, wrap, xlabel);
+    const col = buildChartColumn(bin, axisMax, valueInBin(studentTotal, bin));
     scoreChart.appendChild(col);
   }
 
@@ -294,35 +316,7 @@ function renderScoreChartFromBins(bins, studentTotal, youBinIndex) {
   scoreChartWrap.hidden = false;
   for (let i = 0; i < bins.length; i++) {
     const bin = bins[i];
-    const col = document.createElement("div");
-    col.className = "chart-col";
-    if (i === youBinIndex) col.classList.add("chart-col--you");
-
-    const countEl = document.createElement("span");
-    countEl.className = "chart-col-count";
-    if (bin.count === 0) countEl.classList.add("chart-col-count--zero");
-    countEl.textContent = String(bin.count);
-
-    const wrap = document.createElement("div");
-    wrap.className = "chart-col-bar-wrap";
-    const bar = document.createElement("div");
-    bar.className = "chart-col-bar";
-
-    const pct = axisMax > 0 ? (bin.count / axisMax) * 100 : 0;
-    if (bin.count === 0) {
-      bar.style.height = "0";
-      bar.style.minHeight = "0";
-    } else {
-      bar.style.minHeight = "2px";
-      bar.style.height = `${pct}%`;
-    }
-    wrap.appendChild(bar);
-
-    const xlabel = document.createElement("span");
-    xlabel.className = "chart-col-xlabel";
-    xlabel.textContent = bin.label;
-
-    col.append(countEl, wrap, xlabel);
+    const col = buildChartColumn(bin, axisMax, i === youBinIndex);
     scoreChart.appendChild(col);
   }
 }
@@ -331,28 +325,12 @@ function normalizePhoneToken(value) {
   return String(value).trim().replace(/\s+/g, "");
 }
 
-function phoneTail(phone) {
-  const p = normalizePhoneToken(phone);
-  if (!p) return "";
-  const i = p.lastIndexOf("-");
-  return i === -1 ? p : p.slice(i + 1);
-}
-
 function recordMatchesInput(record, inputRaw) {
   const input = normalizePhoneToken(inputRaw);
   if (!input) return false;
 
   const phone = record.Phone != null ? normalizePhoneToken(record.Phone) : "";
-  if (!phone) return false;
-
-  if (phone === input) return true;
-  if (phoneTail(record.Phone) === input) return true;
-
-  const tail = phoneTail(record.Phone);
-  const stripLeading = (s) => s.replace(/^0+/, "") || "0";
-  if (stripLeading(tail) === stripLeading(input)) return true;
-
-  return false;
+  return !!phone && phone === input;
 }
 
 function appendResultLink(cell, url) {
@@ -521,7 +499,7 @@ form.addEventListener("submit", async (event) => {
     clearResult();
     const msg = err?.message ? String(err.message) : "";
     if (msg === "Not found") {
-      setMessage("Không tìm thấy kết quả. Vui lòng kiểm tra lại số báo danh trong cột Phone.");
+      setMessage("Không tìm thấy kết quả.");
     } else {
       setMessage("Không tải được dữ liệu. Vui lòng thử lại sau.");
     }

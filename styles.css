@@ -49,6 +49,7 @@ main {
 }
 
 .header-inner {
+  position: relative;
   width: 100%;
   max-width: none;
   margin: 0;
@@ -91,6 +92,30 @@ main {
   gap: 1rem 1.5rem;
   flex: 0 0 auto;
   margin-left: auto;
+}
+
+.menu-toggle {
+  display: none;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid rgba(42, 111, 181, 0.3);
+  border-radius: 10px;
+  background: #ffffff;
+  cursor: pointer;
+  margin-left: auto;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-direction: column;
+}
+
+.menu-toggle span {
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--hocmai-blue-dark);
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
 .nav-links a {
@@ -550,10 +575,32 @@ h1 {
 }
 
 .histogram {
+  position: relative;
   display: flex;
   gap: 0.35rem;
   align-items: flex-start;
   width: 100%;
+  padding-left: 1.6rem;
+}
+
+.histogram-axis-label {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #5f6b7a;
+}
+
+.histogram-axis-label--y {
+  position: absolute;
+  left: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  transform-origin: center;
+}
+
+.histogram-axis-label--x {
+  margin-top: 0.45rem;
+  text-align: center;
 }
 
 .histogram-y-axis {
@@ -562,13 +609,14 @@ h1 {
   justify-content: space-between;
   flex-shrink: 0;
   width: 2.5rem;
-  height: 220px;
+  height: 280px;
   box-sizing: border-box;
   font-size: 0.7rem;
   font-weight: 600;
   color: #5f6b7a;
   text-align: right;
   line-height: 1.2;
+  margin-left: 0.1rem;
 }
 
 .histogram-y-axis span {
@@ -589,20 +637,28 @@ h1 {
   align-items: stretch;
   justify-content: flex-start;
   gap: clamp(4px, 1.2vw, 10px);
-  height: calc(220px + 2.85rem);
+  height: calc(280px + 2.85rem);
   min-width: min(100%, 560px);
   padding: 0 0.35rem 0 0.45rem;
   border-left: 1px solid #dde1e6;
   border-bottom: 1px solid #dde1e6;
   background-color: #ffffff;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent,
-    transparent calc(25% - 1px),
-    #e8eaed calc(25% - 1px),
-    #e8eaed 25%
-  );
-  background-size: 100% 100%;
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent calc(25% - 1px),
+      rgba(194, 202, 212, 0.75) calc(25% - 1px),
+      rgba(194, 202, 212, 0.75) 25%
+    ),
+    repeating-linear-gradient(
+      to right,
+      rgba(222, 227, 234, 0.55),
+      rgba(222, 227, 234, 0.55) 1px,
+      transparent 1px,
+      transparent 24px
+    );
+  background-size: 100% 100%, 100% 100%;
   box-sizing: border-box;
   border-radius: 0 6px 0 0;
 }
@@ -638,10 +694,11 @@ h1 {
 }
 
 .chart-col-bar-wrap {
+  position: relative;
   width: 100%;
   flex: 1 1 auto;
   min-height: 0;
-  height: 220px;
+  height: 280px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -649,6 +706,8 @@ h1 {
 }
 
 .chart-col-bar {
+  border: none;
+  padding: 0;
   width: 72%;
   max-width: 1.85rem;
   min-height: 0;
@@ -656,6 +715,50 @@ h1 {
   background: #3498db;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
   transition: height 0.25s ease-out;
+  cursor: pointer;
+}
+
+.chart-col-bar:focus-visible {
+  outline: 2px solid #1f5a96;
+  outline-offset: 2px;
+}
+
+.chart-col-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--bar-pct, 0%) + 8px);
+  transform: translateX(-50%);
+  padding: 0.3rem 0.45rem;
+  border-radius: 6px;
+  background: rgba(22, 36, 54, 0.95);
+  color: #ffffff;
+  font-size: 0.68rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  z-index: 2;
+}
+
+.chart-col-tooltip-range {
+  display: block;
+  font-weight: 700;
+}
+
+.chart-col-tooltip-count {
+  display: block;
+  margin-top: 2px;
+}
+
+.chart-col-tooltip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(22, 36, 54, 0.95);
 }
 
 .chart-col--you .chart-col-bar {
@@ -663,9 +766,36 @@ h1 {
   box-shadow: 0 1px 2px rgba(229, 57, 53, 0.35);
 }
 
+.chart-col:hover .chart-col-tooltip,
+.chart-col:focus-within .chart-col-tooltip {
+  opacity: 1;
+}
+
+.chart-col--you .chart-col-tooltip {
+  opacity: 0;
+}
+
+.chart-col--you:hover .chart-col-tooltip,
+.chart-col--you:focus-within .chart-col-tooltip {
+  opacity: 0;
+}
+
+.chart-col-fixed-value {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--bar-pct, 0%) + 8px);
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  line-height: 1;
+  font-weight: 800;
+  color: #e53935;
+  white-space: nowrap;
+  z-index: 2;
+}
+
 .chart-col-xlabel {
-  margin-top: 8px;
-  font-size: 0.6rem;
+  margin-top: 38px;
+  font-size: 0.52rem;
   line-height: 1.15;
   color: #5f6b7a;
   text-align: center;
@@ -677,9 +807,19 @@ h1 {
   align-items: flex-start;
   justify-content: center;
   padding-top: 2px;
+  transform-origin: left top;
+  margin-left: -20px;
 }
 
 @media (max-width: 540px) {
+  .histogram-axis-label--y {
+    left: 0.1rem;
+  }
+
+  .histogram-axis-label--x {
+    font-size: 0.7rem;
+  }
+
   .histogram-y-axis {
     width: 1.85rem;
     font-size: 0.62rem;
@@ -691,7 +831,8 @@ h1 {
   }
 
   .chart-col-xlabel {
-    font-size: 0.52rem;
+    margin-top: 34px;
+    font-size: 0.46rem;
     transform: rotate(-48deg);
   }
 }
@@ -773,6 +914,43 @@ h1 {
 }
 
 @media (max-width: 900px) {
+  .header-inner.has-collapsible-nav .menu-toggle {
+    display: inline-flex;
+  }
+
+  .header-inner.has-collapsible-nav .nav-links {
+    display: none;
+    position: absolute;
+    top: calc(100% - 10px);
+    right: clamp(1rem, 4vw, 2.75rem);
+    min-width: 220px;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid rgba(42, 111, 181, 0.16);
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 6px 22px rgba(32, 73, 120, 0.15);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+    z-index: 20;
+  }
+
+  .header-inner.has-collapsible-nav.nav-open .nav-links {
+    display: flex;
+  }
+
+  .header-inner.has-collapsible-nav.nav-open .menu-toggle span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .header-inner.has-collapsible-nav.nav-open .menu-toggle span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .header-inner.has-collapsible-nav.nav-open .menu-toggle span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
   .footer-inner {
     grid-template-columns: 1fr;
     gap: 1.35rem;
@@ -784,10 +962,6 @@ h1 {
 
   .lookup-form {
     grid-template-columns: 1fr;
-  }
-
-  .nav-links {
-    display: none;
   }
 
   .brand-sub {

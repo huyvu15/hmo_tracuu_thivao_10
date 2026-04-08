@@ -23,7 +23,19 @@
           <img class="brand-logo" src="./assets/logo-hocmai.png" alt="Logo HOCMAI" />
           <span class="brand-sub">Nền tảng học trực tuyến số 1 Việt Nam</span>
         </a>
-        <nav class="nav-links" aria-label="Điều hướng">
+        <button
+          class="menu-toggle"
+          id="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="main-nav"
+          aria-label="Mở menu điều hướng"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav class="nav-links" id="main-nav" aria-label="Điều hướng">
           <a href="./index.html">Tra cứu điểm</a>
           <a href="./huong-dan.html">Hướng dẫn</a>
           <a href="./faq.html" aria-current="page">Câu hỏi thường gặp</a>
@@ -144,5 +156,6 @@
         </div>
       </div>
     </footer>
+    <script src="./nav.js"></script>
   </body>
 </html>

@@ -23,7 +23,19 @@
           <img class="brand-logo" src="./assets/logo-hocmai.png" alt="Logo HOCMAI" />
           <span class="brand-sub">Nền tảng học trực tuyến số 1 Việt Nam</span>
         </a>
-        <nav class="nav-links" aria-label="Điều hướng">
+        <button
+          class="menu-toggle"
+          id="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="main-nav"
+          aria-label="Mở menu điều hướng"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav class="nav-links" id="main-nav" aria-label="Điều hướng">
           <a href="./index.html">Tra cứu điểm</a>
           <a href="./huong-dan.html" aria-current="page">Hướng dẫn</a>
           <a href="./faq.html">Câu hỏi thường gặp</a>
@@ -38,7 +50,7 @@
             <h1 id="huong-dan-heading" class="static-page-title">Hướng dẫn</h1>
             <ul class="info-list">
               <li>Điểm từng môn được hiển thị trong bảng kết quả trên trang tra cứu điểm.</li>
-              <li>Nhấn &quot;Xem chi tiết&quot; để xem bài làm và hướng dẫn chữa bài.</li>
+              <li>Nhấn &quot;Xem chi tiết&quot; để xem đầy đủ điểm số, nhận xét và định hướng ôn tập.</li>
               <li>Điểm xét tuyển được tính theo công thức: Toán + Văn + Anh.</li>
             </ul>
             <h2 class="info-subtitle">Lưu ý</h2>
@@ -94,5 +106,6 @@
         </div>
       </div>
     </footer>
+    <script src="./nav.js"></script>
   </body>
 </html>

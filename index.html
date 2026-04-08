@@ -23,7 +23,19 @@
           <img class="brand-logo" src="./assets/logo-hocmai.png" alt="Logo HOCMAI" />
           <span class="brand-sub">Nền tảng học trực tuyến số 1 Việt Nam</span>
         </a>
-        <nav class="nav-links" aria-label="Điều hướng">
+        <button
+          class="menu-toggle"
+          id="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="main-nav"
+          aria-label="Mở menu điều hướng"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav class="nav-links" id="main-nav" aria-label="Điều hướng">
           <a href="./index.html" aria-current="page">Tra cứu điểm</a>
           <a href="./huong-dan.html">Hướng dẫn</a>
           <a href="./faq.html">Câu hỏi thường gặp</a>
@@ -37,11 +49,11 @@
           <div class="lookup-wrapper">  
             <div class="section-title">
               <h1>Tra cứu điểm thi vào 10</h1>
-              <p>Nhập mã trong cột số báo danh để xem kết quả.</p>
+              <p>Nhập mã tra cứu (4 số cuối số điện thoại + Số báo danh dự thi) để xem kết quả.</p>
             </div>
 
             <form id="lookup-form" class="lookup-form simple-form" novalidate>
-              <label for="candidate-id">Số báo danh</label>
+              <label for="candidate-id">Mã tra cứu</label>
               <input
                 id="candidate-id"
                 name="candidateId"
@@ -137,11 +149,13 @@
                   role="img"
                   aria-label="Biểu đồ cột số lượng thí sinh theo khoảng điểm"
                 >
+                  <p class="histogram-axis-label histogram-axis-label--y">Số thí sinh</p>
                   <div class="histogram-y-axis" id="score-chart-y-axis" aria-hidden="true"></div>
                   <div class="histogram-plot">
                     <div class="histogram-bars" id="score-chart"></div>
                   </div>
                 </div>
+                <p class="histogram-axis-label histogram-axis-label--x">Khoảng điểm xét tuyển</p>
               </div>
             </section>
           </div>
@@ -191,6 +205,7 @@
       </div>
     </footer>
 
+    <script src="./nav.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>
