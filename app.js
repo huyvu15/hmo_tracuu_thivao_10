@@ -1,5 +1,5 @@
 const API_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxFNHvUobhfHFP_6cdWGAyDx8cakKfuH99xMlSGnKLXfSWAl4obbcyANxTba1kBI-JpXA/exec";
+  "https://script.google.com/macros/s/AKfycbzwacaFqe0ngUHzCqvC8CBQYD9JYtA1IXxD_3e1VSI9cc4l4V8Rjacg1ctzO4GYq9FW/exec";
 const API_SHEET_NAME = "Data";
 
 const KEY_LINK_TOAN = "Link kết quả";
